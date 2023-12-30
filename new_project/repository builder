@@ -1,0 +1,38 @@
+#include <iostream>
+
+#include <fstream>
+#include <string>
+#include <chrono>
+
+
+int main()
+{
+
+    for (int i = 1; i < 9999; i++) {
+        std::string num ;
+        std::cout << "number\n";
+        std::cin >> num;
+        std::string name = "C:/Users/asana/Desktop/org/new_project/contest8/contest_file" + num + ".cpp";
+        std::ofstream file(name);
+        std::string comment;
+        int max_duration = 1; // Максимальное время записи в секундах
+        std::cout << "input\t" + num + "\tprogram\n";
+        
+        auto start = std::chrono::high_resolution_clock::now(); // Запуск таймера
+        while (getline(std::cin, comment)) {
+            file << comment << '\n';
+            auto end = std::chrono::high_resolution_clock::now(); // Получение текущего времени
+            std::chrono::duration<double> elapsed = end - start; // Вычисление прошедшего времени
+
+            if (elapsed.count() >= max_duration) // Если достигнуто максимальное время, прекратить запись
+            {
+                break;
+            }
+        }
+        file.close();
+        
+    }
+
+
+
+}
