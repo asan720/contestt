@@ -1,0 +1,168 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <vector>
+
+namespace Past
+{
+    std::vector<std::string> pastiterators = {"000", "000", "000"};
+}
+
+bool VerificationPlace(const std::vector<std::string>& vec, int& row, int& col)
+{
+    if(vec[row + 1][col] == 'E')
+    {
+        return false;
+    }
+    if(vec[row - 1][col] == 'E')
+    {
+        return false;
+    }
+    if(vec[row][col - 1] == 'E')
+    {
+        return false;
+    }
+    if(vec[row][col + 1] == 'E')
+    {
+        return false;
+    }
+    return true;
+}
+bool VerificationVec(int row, int col)
+{
+    if(Past::pastiterators[-1] == std::to_string(row) + std::to_string(col)) return false;
+    if(Past::pastiterators[-2] == std::to_string(row) + std::to_string(col)) return false;
+    if(Past::pastiterators[-3] == std::to_string(row) + std::to_string(col)) return false;
+    return true;
+}
+
+void Left(std::vector<std::string>& vec, int& row, int& col)
+{
+    vec[row][col] = ' ';
+    vec[row][col - 1] = 'X';
+    col--;
+}
+void Right(std::vector<std::string>& vec, int& row, int& col)
+{
+    vec[row][col] = ' ';
+    vec[row][col + 1] = 'X';
+    col = col + 1;
+}
+void Up(std::vector<std::string>& vec, int& row, int& col)
+{
+    vec[row][col] = ' ';
+    vec[row - 1][col] = 'X';
+    row = row - 1;
+}
+void Down(std::vector<std::string>& vec, int& row, int& col)
+{
+    vec[row][col] = ' ';
+    vec[row + 1][col] = 'X';
+    row = row + 1;
+}
+
+void Print(std::vector<std::string> vec)
+{
+    for(int i = 0; i < vec.size(); i++)
+    {
+        std::cout<<vec[i]<<'\n';
+    }
+}
+
+void InputMatrix(std::vector<std::string>& vec, int row, int col)
+{
+
+    std::string line;
+    for(int i = 0; i < 7; i++)
+    {
+        getline(std::cin, line, '\n');
+        vec.push_back(line);
+    }
+    vec[row][col] = 'X';
+}
+
+std::string FindExit(std::vector<std::string>& vec, int& row, int& col)
+{
+    std::string response = "not found";
+    for (int i = 0; i < 70 && vec[row][col] != 'E'; i++)
+    {
+        Past::pastiterators.push_back(std::to_string(row) + std::to_string(col));
+        Print(vec);
+        if(vec[row][col] == 'E')
+        {
+            response = "found in " + std::to_string(row) + " " + std::to_string(col);
+            break;
+        }
+        if(vec[row][col - 1] == ' ' && VerificationVec(row, col-1))
+        {
+            Left(vec, row, col);
+            continue;
+        }
+        if(vec[row][col + 1] == ' ' && VerificationVec(row, col+1))
+        {
+            Right(vec, row, col);
+            continue;
+        }
+        if(vec[row - 1][col] == ' ' && VerificationVec(row-1, col))
+        {
+            Up(vec, row, col);
+            continue;
+        }
+        if(vec[row + 1][col] == ' ' && VerificationVec(row+1, col))
+        {
+            Down(vec, row, col);
+            continue;
+        }
+
+    }
+    return response;
+}
+
+std::string LukTremo(std::vector<std::string>& vec, int& row, int& col)
+{
+    for(int i = 1; i < vec[1].size() * vec.size(); i++)
+    {
+        /*std::cout<<'\n'<<i<<'\n';
+        Print(vec);*/
+        if(!VerificationPlace(vec, row, col))
+        {
+            return "YES";
+        }
+        if(vec[row + 1][col] == ' ')
+        {
+            vec[row + 1][col] = 'X';
+            row++;
+        }
+        if(vec[row - 1][col] == ' ')
+        {
+            vec[row - 1][col] = 'X';
+            row--;
+        }
+        if(vec[row][col - 1] == ' ')
+        {
+            vec[row][col - 1] = 'X';
+            col--;
+        }
+        if(vec[row][col + 1] == ' ')
+        {
+            vec[row][col + 1] = 'X';
+            col++;
+        }
+    }
+    return "NO";
+}
+
+int main()
+{
+    int row, col, rows, cols;
+    std::cin >> row >> col >> rows >> cols;
+    std::cin.ignore(1);
+
+    std::vector<std::string> vec;
+    InputMatrix(vec, row, col);
+
+    std::cout<<LukTremo(vec, row, col);
+
+
+   /* std::cout<<FindExit(vec, row, col);*/
+}
